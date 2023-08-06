@@ -28,6 +28,7 @@ Tensorflow 2 implementation of CycleGAN.
     ```
 
     Install requirements
+
     ```console
     pip install -r requirements.txt
     ```

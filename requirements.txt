@@ -8,3 +8,4 @@ sentinelsat
 rasterio
 numpy
 opencv-python
+gdown

@@ -18,14 +18,13 @@ yaml = py.join(test_args.experiment_dir, 'settings.yml')
 args = py.args_from_yaml(yaml)
 args.__dict__.update(test_args.__dict__)
 
-
 # ==============================================================================
 # =                                    test                                    =
 # ==============================================================================
 
 # data
-A_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'testA'), '*.jpg')
-B_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'testB'), '*.jpg')
+A_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'testA'), '*.jpeg')
+B_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'trainB'), '*.jpeg')
 A_dataset_test = data.make_dataset(A_img_paths_test, args.batch_size, args.load_size, args.crop_size,
                                    training=False, drop_remainder=False, shuffle=False, repeat=1)
 B_dataset_test = data.make_dataset(B_img_paths_test, args.batch_size, args.load_size, args.crop_size,
@@ -35,7 +34,7 @@ B_dataset_test = data.make_dataset(B_img_paths_test, args.batch_size, args.load_
 G_A2B = module.ResnetGenerator(input_shape=(args.crop_size, args.crop_size, 3))
 G_B2A = module.ResnetGenerator(input_shape=(args.crop_size, args.crop_size, 3))
 
-# resotre
+# restore
 tl.Checkpoint(dict(G_A2B=G_A2B, G_B2A=G_B2A), py.join(args.experiment_dir, 'checkpoints')).restore()
 
 

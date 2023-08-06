@@ -2,11 +2,6 @@ import os
 
 ENABLE_GPU = True
 
-# somehow, the Conda environment can't read the required dlls when this path is included in the environment variables.
-if ENABLE_GPU:
-  os.add_dll_directory('C:/Users/Subspace_Sig1/miniconda3/envs/denoiser/Library/bin')
-
-
 import functools
 
 import imlib as im
@@ -65,7 +60,6 @@ py.mkdir(output_dir)
 
 # save settings
 py.args_to_yaml(py.join(output_dir, 'settings.yml'), args)
-
 
 
 """ path=args.datasets_dir +"/"+ args.dataset+"/trainB/"
