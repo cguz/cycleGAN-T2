@@ -1,0 +1,9 @@
+tensorflow
+scikit-image 
+tqdm 
+tensorflow-addons
+unzip
+oyaml
+sentinelsat
+rasterio
+opencv-python

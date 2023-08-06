@@ -12,6 +12,9 @@ import tqdm
 import data
 import module
 
+import os
+import cv2
+
 
 # ==============================================================================
 # =                                   param                                    =
@@ -22,7 +25,7 @@ py.arg('--datasets_dir', default='datasets')
 py.arg('--load_size', type=int, default=286)  # load image to this size
 py.arg('--crop_size', type=int, default=256)  # then crop to this size
 py.arg('--batch_size', type=int, default=1)
-py.arg('--epochs', type=int, default=200)
+py.arg('--epochs', type=int, default=1)
 py.arg('--epoch_decay', type=int, default=100)  # epoch to start decaying learning rate
 py.arg('--lr', type=float, default=0.0002)
 py.arg('--beta_1', type=float, default=0.5)
@@ -42,19 +45,63 @@ py.mkdir(output_dir)
 py.args_to_yaml(py.join(output_dir, 'settings.yml'), args)
 
 
+
+""" path=args.datasets_dir +"/"+ args.dataset+"/trainB/"
+
+index = 10
+for file in os.listdir(path):
+    if file.endswith(".jpeg") or file.endswith(".JPEG"):
+        img = cv2.imread(path+str(file))
+        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
+        os.remove(path+file)
+        index = index + 1
+
+
+path=args.datasets_dir +"/"+ args.dataset+"/trainA/"
+
+index = 10
+for file in os.listdir(path):
+    if file.endswith(".jpeg") or file.endswith(".JPEG"):
+        img = cv2.imread(path+str(file))
+        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
+        os.remove(path+file)
+        index = index + 1
+
+path=args.datasets_dir +"/"+ args.dataset+"/testA/"
+
+index = 10
+for file in os.listdir(path):
+    if file.endswith(".jpeg") or file.endswith(".JPEG"):
+        img = cv2.imread(path+str(file))
+        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
+        os.remove(path+file)
+        index = index + 1
+
+
+path=args.datasets_dir +"/"+ args.dataset+"/testB/"
+
+index = 10
+for file in os.listdir(path):
+    if file.endswith(".jpeg") or file.endswith(".JPEG"):
+        img = cv2.imread(path+str(file))
+        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
+        os.remove(path+file)
+        index = index + 1 """
+
+
 # ==============================================================================
 # =                                    data                                    =
 # ==============================================================================
 
-A_img_paths = py.glob(py.join(args.datasets_dir, args.dataset, 'trainA'), '*.jpg')
-B_img_paths = py.glob(py.join(args.datasets_dir, args.dataset, 'trainB'), '*.jpg')
+A_img_paths = py.glob(py.join(args.datasets_dir, args.dataset, 'trainA'), '*.jpeg')
+B_img_paths = py.glob(py.join(args.datasets_dir, args.dataset, 'trainB'), '*.jpeg')
 A_B_dataset, len_dataset = data.make_zip_dataset(A_img_paths, B_img_paths, args.batch_size, args.load_size, args.crop_size, training=True, repeat=False)
 
 A2B_pool = data.ItemPool(args.pool_size)
 B2A_pool = data.ItemPool(args.pool_size)
 
-A_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'testA'), '*.jpg')
-B_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'testB'), '*.jpg')
+A_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'testA'), '*.jpeg')
+B_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'trainB'), '*.jpeg')
 A_B_dataset_test, _ = data.make_zip_dataset(A_img_paths_test, B_img_paths_test, args.batch_size, args.load_size, args.crop_size, training=False, repeat=True)
 
 
@@ -165,7 +212,7 @@ def sample(A, B):
 # ==============================================================================
 
 # epoch counter
-ep_cnt = tf.Variable(initial_value=0, trainable=False, dtype=tf.int64)
+ep_cnt = tf.Variable(initial_value=0, trainable=False, dtype=tf.float64)
 
 # checkpoint
 checkpoint = tl.Checkpoint(dict(G_A2B=G_A2B,
