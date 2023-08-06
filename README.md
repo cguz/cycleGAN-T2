@@ -27,6 +27,11 @@ Tensorflow 2 implementation of CycleGAN.
     source .env/bin/activate
     ```
 
+    Install requirements
+    ```console
+    pip install -r requirements.txt
+    ```
+
 - Dataset
 
   - download the sentinel dataset

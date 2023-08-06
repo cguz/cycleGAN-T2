@@ -10,7 +10,7 @@ ZIP_FILE=./datasets/$FILE.zip
 if [[ $FILE == "sentinel" ]]; then
     pip install gdown
     URL='16cOelqwMmMo3Z3S9cb7_RMcMNWFGn4xx'
-    gdown --id $URL -O datasets/
+    gdown --id $URL -O $ZIP_FILE
 else
     URL=https://people.eecs.berkeley.edu/~taesung_park/CycleGAN/datasets/$FILE.zip
     wget -N $URL -O $ZIP_FILE

@@ -1,3 +1,12 @@
+import os
+
+ENABLE_GPU = True
+
+# somehow, the Conda environment can't read the required dlls when this path is included in the environment variables.
+if ENABLE_GPU:
+  os.add_dll_directory('C:/Users/Subspace_Sig1/miniconda3/envs/denoiser/Library/bin')
+
+
 import functools
 
 import imlib as im
@@ -12,8 +21,21 @@ import tqdm
 import data
 import module
 
-import os
 import cv2
+
+
+# Print Tensorflow version
+print(tf.__version__)
+
+# check if TensorFlow was built with CUDA and GPU support
+if ENABLE_GPU:
+
+  # print some GPU stuff
+  print("Built with CUDA: ", tf.test.is_built_with_cuda())
+  print("Built with GPU support: ", tf.test.is_built_with_gpu_support())
+
+  # Verbosity on the number of GPUs available
+  print("Number GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 
 # ==============================================================================
@@ -132,16 +154,23 @@ D_optimizer = keras.optimizers.Adam(learning_rate=D_lr_scheduler, beta_1=args.be
 @tf.function
 def train_G(A, B):
     with tf.GradientTape() as t:
+        # Generate images for both domains
         A2B = G_A2B(A, training=True)
         B2A = G_B2A(B, training=True)
+
+        # Cycle consistency
         A2B2A = G_B2A(A2B, training=True)
         B2A2B = G_A2B(B2A, training=True)
+
+        # Identity mapping
         A2A = G_B2A(A, training=True)
         B2B = G_A2B(B, training=True)
 
+        # Discriminator logits
         A2B_d_logits = D_B(A2B, training=True)
         B2A_d_logits = D_A(B2A, training=True)
 
+        # Generator losses
         A2B_g_loss = g_loss_fn(A2B_d_logits)
         B2A_g_loss = g_loss_fn(B2A_d_logits)
         A2B2A_cycle_loss = cycle_loss_fn(A, A2B2A)
@@ -149,11 +178,16 @@ def train_G(A, B):
         A2A_id_loss = identity_loss_fn(A, A2A)
         B2B_id_loss = identity_loss_fn(B, B2B)
 
+        # Total generator loss
         G_loss = (A2B_g_loss + B2A_g_loss) + (A2B2A_cycle_loss + B2A2B_cycle_loss) * args.cycle_loss_weight + (A2A_id_loss + B2B_id_loss) * args.identity_loss_weight
 
+    # Calculate gradients
     G_grad = t.gradient(G_loss, G_A2B.trainable_variables + G_B2A.trainable_variables)
+
+    # Apply gradients
     G_optimizer.apply_gradients(zip(G_grad, G_A2B.trainable_variables + G_B2A.trainable_variables))
 
+    # Retrieve generated images and losses
     return A2B, B2A, {'A2B_g_loss': A2B_g_loss,
                       'B2A_g_loss': B2A_g_loss,
                       'A2B2A_cycle_loss': A2B2A_cycle_loss,

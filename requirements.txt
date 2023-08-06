@@ -6,4 +6,5 @@ unzip
 oyaml
 sentinelsat
 rasterio
+numpy
 opencv-python
