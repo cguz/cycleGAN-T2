@@ -42,7 +42,7 @@ py.arg('--datasets_dir', default='datasets')
 py.arg('--load_size', type=int, default=286)  # load image to this size
 py.arg('--crop_size', type=int, default=256)  # then crop to this size
 py.arg('--batch_size', type=int, default=1)
-py.arg('--epochs', type=int, default=1)
+py.arg('--epochs', type=int, default=200)
 py.arg('--epoch_decay', type=int, default=100)  # epoch to start decaying learning rate
 py.arg('--lr', type=float, default=0.0002)
 py.arg('--beta_1', type=float, default=0.5)
@@ -253,7 +253,7 @@ checkpoint = tl.Checkpoint(dict(G_A2B=G_A2B,
                            py.join(output_dir, 'checkpoints'),
                            max_to_keep=5)
 try:  # restore checkpoint including the epoch counter
-    checkpoint.restore().assert_existing_objects_matched()
+    checkpoint.restore(py.join(output_dir, 'checkpoints')).assert_existing_objects_matched()
 except Exception as e:
     print(e)
 
