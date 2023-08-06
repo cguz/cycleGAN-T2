@@ -14,7 +14,8 @@ import module
 py.arg('--experiment_dir')
 py.arg('--batch_size', type=int, default=32)
 test_args = py.args()
-args = py.args_from_yaml(py.join(test_args.experiment_dir, 'settings.yml'))
+yaml = py.join(test_args.experiment_dir, 'settings.yml')
+args = py.args_from_yaml(yaml)
 args.__dict__.update(test_args.__dict__)
 
 
