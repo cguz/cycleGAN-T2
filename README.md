@@ -35,7 +35,9 @@ Tensorflow 2 implementation of CycleGAN.
 
 - Dataset
 
-  - download the sentinel dataset
+  - download the opssat dataset
+
+    ./download_dataset.sh datasets opssat 1
 
   - see [download_dataset.sh](./download_dataset.sh) for more datasets
 
