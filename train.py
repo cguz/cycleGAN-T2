@@ -18,6 +18,8 @@ import module
 
 import cv2
 
+# set enable gpu to true
+ENABLE_GPU = True
 
 # Print Tensorflow version
 print(tf.__version__)
@@ -42,8 +44,8 @@ py.arg('--datasets_dir', default='datasets')
 py.arg('--load_size', type=int, default=286)  # load image to this size
 py.arg('--crop_size', type=int, default=256)  # then crop to this size
 py.arg('--batch_size', type=int, default=1)
-py.arg('--epochs', type=int, default=200)
-py.arg('--epoch_decay', type=int, default=100)  # epoch to start decaying learning rate
+py.arg('--epochs', type=int, default=100)
+py.arg('--epoch_decay', type=int, default=50)  # epoch to start decaying learning rate
 py.arg('--lr', type=float, default=0.0002)
 py.arg('--beta_1', type=float, default=0.5)
 py.arg('--adversarial_loss_mode', default='lsgan', choices=['gan', 'hinge_v1', 'hinge_v2', 'lsgan', 'wgan'])
@@ -52,72 +54,35 @@ py.arg('--gradient_penalty_weight', type=float, default=10.0)
 py.arg('--cycle_loss_weight', type=float, default=10.0)
 py.arg('--identity_loss_weight', type=float, default=0.0)
 py.arg('--pool_size', type=int, default=50)  # pool size to store fake samples
+py.arg('--train_noised', default='training/noised')
+py.arg('--train_unnoised', default='training/unnoised')
+py.arg('--validation_noised', default='validation/noised')
+py.arg('--validation_unnoised', default='validation/unnoised')
+py.arg('--configuration_noised', default='fnp/50')
 args = py.args()
 
 # output_dir
-output_dir = py.join('output', args.dataset)
+output_dir = py.join('output', args.dataset, args.configuration_noised)
 py.mkdir(output_dir)
 
 # save settings
 py.args_to_yaml(py.join(output_dir, 'settings.yml'), args)
 
 
-""" path=args.datasets_dir +"/"+ args.dataset+"/trainB/"
-
-index = 10
-for file in os.listdir(path):
-    if file.endswith(".jpeg") or file.endswith(".JPEG"):
-        img = cv2.imread(path+str(file))
-        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
-        os.remove(path+file)
-        index = index + 1
-
-
-path=args.datasets_dir +"/"+ args.dataset+"/trainA/"
-
-index = 10
-for file in os.listdir(path):
-    if file.endswith(".jpeg") or file.endswith(".JPEG"):
-        img = cv2.imread(path+str(file))
-        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
-        os.remove(path+file)
-        index = index + 1
-
-path=args.datasets_dir +"/"+ args.dataset+"/testA/"
-
-index = 10
-for file in os.listdir(path):
-    if file.endswith(".jpeg") or file.endswith(".JPEG"):
-        img = cv2.imread(path+str(file))
-        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
-        os.remove(path+file)
-        index = index + 1
-
-
-path=args.datasets_dir +"/"+ args.dataset+"/testB/"
-
-index = 10
-for file in os.listdir(path):
-    if file.endswith(".jpeg") or file.endswith(".JPEG"):
-        img = cv2.imread(path+str(file))
-        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
-        os.remove(path+file)
-        index = index + 1 """
-
 
 # ==============================================================================
 # =                                    data                                    =
 # ==============================================================================
 
-A_img_paths = py.glob(py.join(args.datasets_dir, args.dataset, 'trainA'), '*.jpeg')
-B_img_paths = py.glob(py.join(args.datasets_dir, args.dataset, 'trainB'), '*.jpeg')
+A_img_paths = py.glob(py.join(args.datasets_dir, args.dataset, args.train_noised, args.configuration_noised), '*.jpeg')
+B_img_paths = py.glob(py.join(args.datasets_dir, args.dataset, args.train_unnoised), '*.jpeg')
 A_B_dataset, len_dataset = data.make_zip_dataset(A_img_paths, B_img_paths, args.batch_size, args.load_size, args.crop_size, training=True, repeat=False)
 
 A2B_pool = data.ItemPool(args.pool_size)
 B2A_pool = data.ItemPool(args.pool_size)
 
-A_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'testA'), '*.jpeg')
-B_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'trainB'), '*.jpeg')
+A_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, args.validation_noised, args.configuration_noised), '*.jpeg')
+B_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, args.validation_unnoised), '*.jpeg')
 A_B_dataset_test, _ = data.make_zip_dataset(A_img_paths_test, B_img_paths_test, args.batch_size, args.load_size, args.crop_size, training=False, repeat=True)
 
 

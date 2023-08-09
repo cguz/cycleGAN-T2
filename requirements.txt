@@ -9,3 +9,4 @@ rasterio
 numpy
 opencv-python
 gdown
+tensorflow-gpu

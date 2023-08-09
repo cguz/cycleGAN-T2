@@ -23,8 +23,8 @@ args.__dict__.update(test_args.__dict__)
 # ==============================================================================
 
 # data
-A_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'testA'), '*.jpeg')
-B_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, 'trainB'), '*.jpeg')
+A_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, args.validation_noised, args.configuration_noised), '*.jpeg')
+B_img_paths_test = py.glob(py.join(args.datasets_dir, args.dataset, args.validation_unnoised), '*.jpeg')
 A_dataset_test = data.make_dataset(A_img_paths_test, args.batch_size, args.load_size, args.crop_size,
                                    training=False, drop_remainder=False, shuffle=False, repeat=1)
 B_dataset_test = data.make_dataset(B_img_paths_test, args.batch_size, args.load_size, args.crop_size,
