@@ -44,8 +44,8 @@ py.arg('--datasets_dir', default='datasets')
 py.arg('--load_size', type=int, default=286)  # load image to this size
 py.arg('--crop_size', type=int, default=256)  # then crop to this size
 py.arg('--batch_size', type=int, default=1)
-py.arg('--epochs', type=int, default=1)
-py.arg('--epoch_decay', type=int, default=100)  # epoch to start decaying learning rate
+py.arg('--epochs', type=int, default=100)
+py.arg('--epoch_decay', type=int, default=50)  # epoch to start decaying learning rate
 py.arg('--lr', type=float, default=0.0002)
 py.arg('--beta_1', type=float, default=0.5)
 py.arg('--adversarial_loss_mode', default='lsgan', choices=['gan', 'hinge_v1', 'hinge_v2', 'lsgan', 'wgan'])
@@ -68,48 +68,6 @@ py.mkdir(output_dir)
 # save settings
 py.args_to_yaml(py.join(output_dir, 'settings.yml'), args)
 
-
-""" path=args.datasets_dir +"/"+ args.dataset+"/trainB/"
-
-index = 10
-for file in os.listdir(path):
-    if file.endswith(".jpeg") or file.endswith(".JPEG"):
-        img = cv2.imread(path+str(file))
-        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
-        os.remove(path+file)
-        index = index + 1
-
-
-path=args.datasets_dir +"/"+ args.dataset+"/trainA/"
-
-index = 10
-for file in os.listdir(path):
-    if file.endswith(".jpeg") or file.endswith(".JPEG"):
-        img = cv2.imread(path+str(file))
-        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
-        os.remove(path+file)
-        index = index + 1
-
-path=args.datasets_dir +"/"+ args.dataset+"/testA/"
-
-index = 10
-for file in os.listdir(path):
-    if file.endswith(".jpeg") or file.endswith(".JPEG"):
-        img = cv2.imread(path+str(file))
-        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
-        os.remove(path+file)
-        index = index + 1
-
-
-path=args.datasets_dir +"/"+ args.dataset+"/testB/"
-
-index = 10
-for file in os.listdir(path):
-    if file.endswith(".jpeg") or file.endswith(".JPEG"):
-        img = cv2.imread(path+str(file))
-        cv2.imwrite(path+"n"+str(index)+".jpeg", img)
-        os.remove(path+file)
-        index = index + 1 """
 
 
 # ==============================================================================
