@@ -44,17 +44,17 @@ Tensorflow 2 implementation of CycleGAN.
 - Example of training
 
     ```console
-    CUDA_VISIBLE_DEVICES=0 python train.py --dataset sentinel
+    CUDA_VISIBLE_DEVICES=0 python train.py --dataset opssat
     ```
 
   - tensorboard for loss visualization
 
     ```console
-    tensorboard --logdir ./output/sentinel/summaries --port 6006
+    tensorboard --logdir ./output/opssat/fnp/50/summaries --port 6006
     ```
 
 - Example of testing
 
     ```console
-    CUDA_VISIBLE_DEVICES=0 python test.py --experiment_dir ./output/sentinel
+    CUDA_VISIBLE_DEVICES=0 python test.py --experiment_dir ./output/opssat/fnp/50/
     ```
