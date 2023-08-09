@@ -44,7 +44,7 @@ Tensorflow 2 implementation of CycleGAN.
 - Example of training
 
     ```console
-    CUDA_VISIBLE_DEVICES=0 python train.py --dataset opssat
+    CUDA_VISIBLE_DEVICES=0 python3 train.py --dataset opssat
     ```
 
   - tensorboard for loss visualization
@@ -56,5 +56,5 @@ Tensorflow 2 implementation of CycleGAN.
 - Example of testing
 
     ```console
-    CUDA_VISIBLE_DEVICES=0 python test.py --experiment_dir ./output/opssat/fnp/50/
+    CUDA_VISIBLE_DEVICES=0 python3 test.py --experiment_dir ./output/opssat/fnp/50/
     ```
