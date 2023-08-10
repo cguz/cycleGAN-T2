@@ -15,6 +15,23 @@ def get_gan_losses_fn():
 
     return d_loss_fn, g_loss_fn
 
+# import torch
+# import torch.nn.functional as F
+
+# def get_gan_losses_fn():
+#     bce = torch.nn.BCEWithLogitsLoss()
+
+#     def d_loss_fn(r_logit, f_logit):
+#         r_loss = bce(torch.ones_like(r_logit), r_logit)
+#         f_loss = bce(torch.zeros_like(f_logit), f_logit)
+#         return r_loss, f_loss
+
+#     def g_loss_fn(f_logit):
+#         f_loss = bce(torch.ones_like(f_logit), f_logit)
+#         return f_loss
+
+#     return d_loss_fn, g_loss_fn
+
 
 def get_hinge_v1_losses_fn():
     def d_loss_fn(r_logit, f_logit):
@@ -113,3 +130,36 @@ def gradient_penalty(f, real, fake, mode):
         gp = _gradient_penalty(f, real, fake)
 
     return gp
+
+
+""" def gradient_penalty(f, real, fake, mode):
+    def _gradient_penalty(f, real, fake=None):
+        def _interpolate(a, b=None):
+            if b is None:   # interpolation in DRAGAN
+                beta = torch.rand_like(a)
+                b = a + 0.5 * torch.std(a) * beta
+            shape = [a.shape[0]] + [1] * (a.ndim - 1)
+            alpha = torch.rand(shape, dtype=a.dtype, device=a.device)
+            inter = a + alpha * (b - a)
+            inter = inter.view(a.shape)
+            return inter
+
+        x = _interpolate(real, fake)
+        x.requires_grad_(True)
+        pred = f(x)
+        grad = torch.autograd.grad(outputs=pred, inputs=x,
+                                   grad_outputs=torch.ones_like(pred),
+                                   create_graph=True, retain_graph=True)[0]
+        norm = torch.norm(grad.view(grad.shape[0], -1), dim=1)
+        gp = torch.mean((norm - 1.)**2)
+
+        return gp
+
+    if mode == 'none':
+        gp = torch.tensor(0, dtype=real.dtype, device=real.device)
+    elif mode == 'dragan':
+        gp = _gradient_penalty(f, real)
+    elif mode == 'wgan-gp':
+        gp = _gradient_penalty(f, real, fake)
+
+    return gp """
