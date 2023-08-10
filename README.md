@@ -9,6 +9,8 @@ Tensorflow 2 implementation of CycleGAN.
 - [x] Use Python environment
 - [x] Sentinel dataset
 
+
+Change to https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
 ## Usage
 
 - Environment

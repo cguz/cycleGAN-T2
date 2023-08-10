@@ -107,6 +107,48 @@ def ConvDiscriminator(input_shape=(256, 256, 3),
 
     return keras.Model(inputs=inputs, outputs=h)
 
+""" import torch
+import torch.nn as nn
+
+class ConvDiscriminator(nn.Module):
+    def __init__(self, input_shape=(256, 256, 3), dim=64, n_downsamplings=3, norm='instance_norm'):
+        super(ConvDiscriminator, self).__init__()
+        self.dim_ = dim
+        self.norm = _get_norm_layer(norm)
+
+        # 0
+        self.h = nn.Identity()
+        self.inputs = nn.Identity()
+
+        # 1
+        self.h = nn.Sequential(
+            nn.Conv2d(input_shape[2], dim, kernel_size=4, stride=2, padding=1),
+            nn.LeakyReLU(0.2)
+        )
+
+        for _ in range(n_downsamplings - 1):
+            dim = min(dim * 2, self.dim_ * 8)
+            self.h = nn.Sequential(
+                nn.Conv2d(dim // 2, dim, kernel_size=4, stride=2, padding=1, bias=False),
+                self.norm(dim),
+                nn.LeakyReLU(0.2)
+            )
+
+        # 2
+        dim = min(dim * 2, self.dim_ * 8)
+        self.h = nn.Sequential(
+            nn.Conv2d(dim // 2, dim, kernel_size=4, stride=1, padding=1, bias=False),
+            self.norm(dim),
+            nn.LeakyReLU(0.2)
+        )
+
+        # 3
+        self.h = nn.Conv2d(dim, 1, kernel_size=4, stride=1, padding=1)
+
+    def forward(self, x):
+        x = self.inputs(x)
+        x = self.h(x)
+        return x """
 
 # ==============================================================================
 # =                          learning rate scheduler                           =
@@ -135,3 +177,22 @@ class LinearDecay(keras.optimizers.schedules.LearningRateSchedule):
             false_fn=lambda: self._initial_learning_rate
         ))
         return self.current_learning_rate
+
+
+""" import torch.optim.lr_scheduler as lr_scheduler
+
+class LinearDecay(lr_scheduler._LRScheduler):
+    def __init__(self, optimizer, total_steps, step_decay, last_epoch=-1):
+        self.initial_learning_rate = optimizer.defaults['lr']
+        self.total_steps = total_steps
+        self.step_decay = step_decay
+        super(LinearDecay, self).__init__(optimizer, last_epoch)
+
+    def get_lr(self):
+        if self.last_epoch >= self.step_decay:
+            decay_steps = self.total_steps - self.step_decay
+            current_step = self.last_epoch - self.step_decay + 1
+            decay_factor = (1 - current_step / decay_steps)
+            return [base_lr * decay_factor for base_lr in self.base_lrs]
+        else:
+            return self.base_lrs """
