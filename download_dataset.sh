@@ -10,7 +10,7 @@ fi
 
 if [[ $FILE == "opssat" ]]; then
 
-    URL='1aY_u6Y_VrAy4qagUZBpOXmo95_-BTuto'
+    URL='1BDxbJBf1NRBVt9OBQARzicLOCh-d_QWh'
 
     ZIP_FILE=./$MAIN_PATH/$FILE.tar.gz
     gdown --id $URL -O $ZIP_FILE
